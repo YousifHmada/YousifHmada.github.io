@@ -1,35 +1,205 @@
-<!DOCTYPE html>
 <html>
 	<head>
-		<title>Yousif | Hmada official profile</title>
-	<meta name="description" content="profile page">
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+		<script src='js/snap/snap.svg-min.js'></script>
+		<style>
+			*{
+				margin:0px;
+				padding:0px;
+			}
+			.box-item{
+				position: relative;
+				width : calc(100% - 50px);
+				margin : 25px;
+			}
+			.box-item-img{
+				position: relative;
+				width:100%;
+				z-index: -1;
+			}
+			.box-item-svg{
+				position: relative;
+				z-index: 1;
+			}
+		</style>
 	</head>
-
-		<div class='container'>
-			<svg  id='svg' version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="105.309px" height="121.599px" viewBox="0 0 105.309 121.599" enable-background="new 0 0 105.309 121.599"
-	 xml:space="preserve">
-<g>
-	<polygon fill="#EF4136" stroke="#EF4136" stroke-linejoin="round" stroke-miterlimit="28" points="50.529,57.3 69.987,60.8 
-		69.987,60.8 50.529,64.3 	"/>
-	<polygon fill="#EF4136" points="40.321,60.8 52.654,60.8 52.654,67.466 40.321,60.8 52.654,54.133 52.654,60.8 	"/>
-</g>
-		</div>
-		<script src='snap/snap.svg-min.js'></script>
+	<body>
+		
 		<script>
-			var s = Snap('#svg');
-			var path = s.path('M52.654,17.062l37.879,21.869v43.738l-37.879,21.869L14.776,82.669V38.931L52.654,17.062 M52.654,10.133L8.776,35.467v50.666l43.878,25.333l43.879-25.333V35.467L52.654,10.133L52.654,10.133z');
-			path.attr({
-				fill : "#EF4136"
-			});
-			document.getElementById('svg').onmouseover=function(){
-				path.animate({transform : "s1.1,52.6545,60.7995"}, 500, mina.elastic);
-				
+			var to_resize = function(){
+				this.arr_all = Array();
 			};
-			document.getElementById('svg').onmouseout=function(){
-				path.animate({transform : "s1,52.6545,60.7995"}, 500, mina.elastic);
+			to_resize.prototype = {
+				add : function(obj){
+					this.arr_all.push(obj);
+				},
+				resize_all : function(){
+					for(var i = 0; i < this.arr_all.length; i++){
+						 this.arr_all[i].resize();
+					}
+				}
+			};
+			var resize_obj = new to_resize;
+			window.onresize = function(){
+				resize_obj.resize_all();
+			};
+			var triangle = function(id,img_id,width,height,color,type,ratioW,ratioH){
+				this.svg = Snap('#'+id);
+				this.type = type;
+				this.id = id;
+				this.img_id = img_id;
+				this.ratioW = ratioW;
+				this.ratioH = ratioH;
+				this.polygon = this.svg.polygon();
+				this.change_dim(width,height,ratioW,ratioH);
+				this.change_color(color);
+				this.set();
+				resize_obj.add(this);
+			}
+			triangle.prototype = {
+				set : function(){
+					if(this.type == 'bottom-left'){
+						this.polygon.attr({
+							transform : "t-400,0",
+							opacity : 0 
+						});
+					}
+					else if(this.type == 'bottom-right'){
+						var temp = this.width + 400;
+						this.polygon.attr({
+							transform : "t"+temp+",0",
+							opacity : 0 
+						});
+					}
+					else if(this.type == 'top-right'){
+						var temp = this.width + 400;
+						this.polygon.attr({
+							transform : "t"+temp+",0",
+							opacity : 0
+						});
+					}
+					else if(this.type == 'top-left'){
+						this.polygon.attr({
+							transform : "t-400,0",
+							opacity : 0 
+						});
+					}
+				},
+				resize : function(){
+					var nodec = document.getElementById(this.img_id);
+					var hc = nodec.clientHeight;
+					var wc = nodec.clientWidth;
+					var ratioW = this.ratioW;
+					var ratioH = this.ratioH ;
+					nodec.style.marginBottom = '-' + hc + 'px';
+					this.change_dim(wc,hc,ratioW,ratioH);
+				},
+				flash : function(){
+					if(this.type == 'bottom-left'){
+						this.polygon.animate({transform : "t0,0"}, 800);
+						this.polygon.animate({opacity : 1}, 1000);
+					}
+					else if(this.type == 'bottom-right'){
+						this.polygon.animate({transform : "t0,0"}, 1100);
+						this.polygon.animate({opacity : 1}, 1300);
+					}
+					else if(this.type == 'top-right'){
+						this.polygon.animate({transform : "t0,0"}, 1100);
+						this.polygon.animate({opacity : 1}, 1300);					
+					}
+					else if(this.type == 'top-left'){
+						this.polygon.animate({transform : "t0,0"}, 800);
+						this.polygon.animate({opacity : 1}, 1000);
+					}
+				},
+				change_dim : function(width,height,ratio_width,ratio_height){
+					this.width = width;
+					this.height = height;
+					var height_poligon =  height * ratio_height;
+					var width_poligon =  width * ratio_width;
+					var height_relative = height - height_poligon;
+					this.svg.attr({
+						width : width + 'px'
+					});
+					this.svg.attr({
+						height : height + 'px'
+					});
+					if(this.type == 'bottom-left'){
+						this.polygon.attr({
+								points : '0 ' + height_relative + ' ' + width_poligon + ' ' + height + ' 0 ' + height
+						});
+					}
+					else if(this.type == 'bottom-right'){
+						width_relative = width - width_poligon;
+						this.polygon.attr({
+								points : width + ' ' + height_relative + ' ' + width + ' ' + height + ' ' + width_relative + ' ' + height
+						});
+					}
+					else if(this.type == 'top-right'){
+						width_relative = width - width_poligon;
+						this.polygon.attr({
+								points : width + ' 0 ' + width + ' ' + height_poligon + ' ' + width_relative + ' 0'
+						});
+					}
+					else if(this.type == 'top-left'){
+						width_relative = width - width_poligon;
+						this.polygon.attr({
+								points : '0 0 ' + width_poligon + ' 0 '  + ' 0 ' + height_poligon
+						});
+					}
+				},
+				change_color : function(color){
+					this.polygon.attr({
+						fill : color
+					});
+				}
 			}
 		</script>
+		<div class='box-item'>
+			<picture>
+			    <source srcset="after_edit/ph1-600_large_0x.jpg" media="(max-width: 600px)">
+			    <source srcset="after_edit/ph1-800_large_1x.jpg" media="(max-width: 800px)">
+			    <source srcset="after_edit/ph1-1086_large_2x.jpg">
+			    <img  id='img1' class='box-item-img' srcset="default.jpg" alt="My default image">
+			</picture>
+			<svg id='svg1' class='box-item-svg'>
+			</svg>
+			<script>
+				var node = document.getElementById('img1');
+				var height = node.clientHeight;
+				var width = node.clientWidth;
+				node.style.marginBottom = '-' + height + 'px';
+				var x1 = new triangle('svg1','img1',width,height,'rgba(64,88,255,0.4)','top-left',0.3,0.7);
+				var y1 = new triangle('svg1','img1',width,height,'rgba(232,64,224,0.4)','bottom-left',0.8,0.3);
+					setTimeout(function(){
+						x1.flash();
+						y1.flash();
+					},500);
+				</script>
+		</div>
+		<div class='box-item'>
+			<picture>
+			    <source srcset="after_edit/ph2-600_large_0x.jpg" media="(max-width: 600px)">
+			    <source srcset="after_edit/ph2-800_large_1x.jpg" media="(max-width: 800px)">
+			    <source srcset="after_edit/ph2-1086_large_2x.jpg">
+			    <img  id='img2' class='box-item-img' srcset="default.jpg" alt="My default image">
+			</picture>
+			<svg id='svg2' class='box-item-svg'>
+			</svg>
+			<script>
+				var node = document.getElementById('img2');
+				var height = node.clientHeight;
+				var width = node.clientWidth;
+				node.style.marginBottom = '-' + height + 'px';
+				var x2 = new triangle('svg2','img2',width,height,'rgba(64,88,255,0.4)','top-right',0.5,0.4);
+				var y2 = new triangle('svg2','img2',width,height,'rgba(232,64,224,0.4)','bottom-right',0.8,0.8);
+				setTimeout(function(){
+						x2.flash();
+						y2.flash();
+					},500);
+				window.onload=function(){
+					resize_obj.resize_all();
+				}
+			</script>
+		</div>
 	</body>
 </html>

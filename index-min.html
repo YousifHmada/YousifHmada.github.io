@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<style>
+			*{
+				margin:0px;
+				padding:0px;
+			}
+			.box-item{
+				width : calc(100% - 20px);
+				margin-left: 10px;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			.box-item-img{
+				position: relative;
+				width:100%;
+				z-index: -1;
+			}
+			.box-item-svg{
+				position: relative;
+				z-index: 1;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<script src='app.js'>
+		</script>
+		<div class='box-item'>
+			<picture>
+			    <source srcset="after_edit/ph1-600_large_0x.jpg" media="(max-width: 600px)">
+			    <source srcset="after_edit/ph1-800_large_1x.jpg" media="(max-width: 800px)">
+			    <source srcset="after_edit/ph1-1086_large_2x.jpg">
+			    <img  id='img1' class='box-item-img' srcset="default.jpg" alt="My default image">
+			</picture>
+			<svg id='svg1' class='box-item-svg' width='800px' height='400px'>
+			</svg>
+			<script>
+				var node = document.getElementById('img1');
+				var height = node.clientHeight;
+				var width = node.clientWidth;
+				node.style.marginBottom = '-' + height + 'px';
+				var x = new triangle(node,'svg1',width,height,'rgba(64,88,255,0.4)','top-left',0.3,0.7);
+				var y = new triangle(node,'svg1',width,height,'rgba(232,64,224,0.4)','bottom-left',0.8,0.3);
+				node.addEventListener('load', function(){
+					setTimeout(function(){
+						x.flash();
+						y.flash();
+					},500);
+				})
+			</script>
+		</div>
+	</body>
+</html>
